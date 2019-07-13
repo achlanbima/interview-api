@@ -19,19 +19,15 @@ const Helpers = use('Helpers')
 
 Route.post('upload', async ({ request }) => {
   const profilePic = request.file('profile_pic', {
-    types: ['image'],
-    size: '2mb'
+    types: ['video']
   })
 
-  await profilePic.move(Helpers.tmpPath('uploads'), {
-    name: 'custom-name.jpg',
-    overwrite: true
-  })
+  await profilePic.move(Helpers.publicPath('uploads'))
 
   if (!profilePic.moved()) {
     return profilePic.error()
   }
-  return 'File moved'
+  return profilePic
 })
 
 Route.get('/', () => {

@@ -35,6 +35,7 @@ class AnswerController {
    */
   async store ({ request, response }) {
 
+    
     const rules = {
       user_id: 'required',
       question_id: 'required',
@@ -47,21 +48,36 @@ class AnswerController {
         return response.status(500).send({message: `${validation._errorMessages[0].field} tidak boleh kosong`})
       }
     }
-
-    const {question_id,user_id,answer,attachment} = request.only([
+    
+    const {question_id,user_id,answer} = request.only([
       'question_id',
       'user_id',
       'answer',
-      'attachment'
     ])
-
-    const answers = await  Answer.create({
-      question_id,
-      user_id,
-      answer,
-      attachment
+    
+    
+    const attachment = request.file('attachment', {
+      types: ['video']
     })
+    let answers
+    if(attachment){
+      
+        await attachment.move(Helpers.publicPath('uploads'))
+      
+        if (!attachment.moved()) {
+          return attachment.error()
+        }
 
+    }else{
+
+      answers = await  Answer.create({
+        question_id,
+        user_id,
+        answer,
+      })
+    }
+
+    
     return response.status(200).send({message: "answers submitted", data:answers.answer || answers.attachment})
   }
 
