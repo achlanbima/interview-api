@@ -11,7 +11,7 @@ class UserController {
 
     const rules = {
       email: 'required|email|unique:users,email',
-      username: 'required',
+      username: 'required|unique:users',
       phone_number: 'required'
     }
 

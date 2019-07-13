@@ -21,6 +21,7 @@ class QuestionController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    // const questions = await Question.query().paginate(2, 1)
     const questions = await Question.all()
 
     return response.status(200).send({message: "Retrieve all questions", data:questions})

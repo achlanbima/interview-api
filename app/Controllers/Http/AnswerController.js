@@ -7,6 +7,8 @@
 /**
  * Resourceful controller for interacting with answers
  */
+const { validate } = use('Validator')
+
 const Answer = use('App/Models/Answer')
 
 class AnswerController {
@@ -32,6 +34,20 @@ class AnswerController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+
+    const rules = {
+      user_id: 'required',
+      question_id: 'required',
+    }
+
+    const validation = await validate(request.all(), rules)
+
+    if (validation.fails()) {
+      if(validation._errorMessages[0].validation == "required"){
+        return response.status(500).send({message: `${validation._errorMessages[0].field} tidak boleh kosong`})
+      }
+    }
+
     const {question_id,user_id,answer,attachment} = request.only([
       'question_id',
       'user_id',
